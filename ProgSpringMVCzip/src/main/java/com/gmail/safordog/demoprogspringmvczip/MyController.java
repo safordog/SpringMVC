@@ -25,16 +25,17 @@ public class MyController {
         FileOutputStream fout = new FileOutputStream("/home/safordog/IdeaProjects/ProgSpringMVCzip/src/main/resources/static/archive.zip");
         CheckedOutputStream checksum = new CheckedOutputStream(fout, new Adler32());
         ZipOutputStream zout = new ZipOutputStream(checksum);
+
         for (MultipartFile temp : files) {
-            FileInputStream fin = new FileInputStream(temp.getOriginalFilename());
+            ByteArrayInputStream bais = new ByteArrayInputStream(temp.getBytes());
             ZipEntry zipEntry = new ZipEntry(temp.getOriginalFilename());
             zout.putNextEntry(zipEntry);
             int length;
             byte[] buffer = new byte[1024];
-            while((length = fin.read(buffer)) > 0) {
+            while((length = bais.read(buffer)) > 0) {
                 zout.write(buffer, 0, length);
             }
-            fin.close();
+            bais.close();
         }
         zout.closeEntry();
         zout.finish();
